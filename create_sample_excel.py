@@ -1,37 +1,37 @@
-"""Create sample Excel file for testing product imports."""
+"""Crea un archivo Excel de muestra para importar productos (catálogo en español, precios CLP)."""
 
 import pandas as pd
-from decimal import Decimal
+import random
 
-# Sample product data
-sample_data = [
-    ["Modern Sofa", "Comfortable 3-seater sofa with premium fabric", 1299.99, "Furniture", "ComfortCorp", "SOF001", 10, "https://example.com/sofa.jpg", "modern,comfortable,living room"],
-    ["Dining Table", "Solid wood dining table for 6 people", 899.99, "Furniture", "WoodCraft", "DIN001", 5, "https://example.com/table.jpg", "dining,wood,family"],
-    ["Office Chair", "Ergonomic office chair with lumbar support", 299.99, "Office", "ErgoPlus", "CHR001", 15, "https://example.com/chair.jpg", "office,ergonomic,support"],
-    ["Bookshelf", "5-tier wooden bookshelf", 199.99, "Storage", "WoodCraft", "BSH001", 8, "https://example.com/bookshelf.jpg", "storage,books,wood"],
-    ["Coffee Table", "Glass top coffee table with metal legs", 349.99, "Furniture", "ModernHome", "CFT001", 12, "https://example.com/coffee-table.jpg", "coffee,glass,modern"],
-    ["Wardrobe", "Large wardrobe with sliding doors", 799.99, "Storage", "SpacePlus", "WAR001", 6, "https://example.com/wardrobe.jpg", "storage,clothes,sliding"],
-    ["Desk Lamp", "LED desk lamp with adjustable brightness", 79.99, "Lighting", "BrightTech", "LAM001", 25, "https://example.com/lamp.jpg", "lighting,LED,adjustable"],
-    ["Bean Bag", "Large bean bag chair for relaxation", 149.99, "Furniture", "ComfortCorp", "BBG001", 20, "https://example.com/beanbag.jpg", "relaxation,comfort,casual"],
+# Datos de productos de muestra
+data = [
+    ["Sofá Moderno", "Sofá de 3 plazas con tela premium y diseño contemporáneo", 459990, "Muebles", "ConfortChile", "SOF001", 8, f"https://picsum.photos/id/{random.randint(1, 100)}/200/300", "moderno,cómodo,sala de estar"],
+    ["Mesa de Comedor", "Mesa de comedor de madera sólida para 6 personas", 329990, "Muebles", "MaderasNativas", "MES001", 4, f"https://picsum.photos/id/{random.randint(1, 100)}/200/300", "comedor,madera,familiar"],
+    ["Silla de Oficina", "Silla ergonómica con soporte lumbar ajustable", 119990, "Oficina", "ErgoPlus", "SIL001", 12, f"https://picsum.photos/id/{random.randint(1, 100)}/200/300", "oficina,ergonómica,soporte"],
+    ["Librero", "Librero de 5 niveles en madera natural", 89990, "Almacenamiento", "MaderasNativas", "LIB001", 6, f"https://picsum.photos/id/{random.randint(1, 100)}/200/300", "almacenamiento,libros,madera"],
+    ["Mesa de Centro", "Mesa de centro con cubierta de vidrio y patas metálicas", 129990, "Muebles", "HogarModerno", "MCE001", 10, f"https://picsum.photos/id/{random.randint(1, 100)}/200/300", "centro,vidrio,moderna"],
+    ["Ropero", "Ropero grande con puertas corredizas y amplio espacio", 249990, "Almacenamiento", "EspacioPlus", "ROP001", 3, f"https://picsum.photos/id/{random.randint(1, 100)}/200/300", "almacenamiento,ropa,corredizo"],
+    ["Lámpara de Escritorio", "Lámpara LED con brillo regulable y diseño minimalista", 29990, "Iluminación", "LuzTech", "LAM001", 18, f"https://picsum.photos/id/{random.randint(1, 100)}/200/300", "iluminación,LED,ajustable"],
+    ["Puf", "Puf grande para sala de estar, ideal para relajarse", 49990, "Muebles", "ConfortChile", "PUF001", 15, f"https://picsum.photos/id/{random.randint(1, 100)}/200/300", "relajación,comodidad,casual"],
 ]
 
-# Create DataFrame
-df = pd.DataFrame(sample_data, columns=[
-    "Product Name",
-    "Description", 
-    "Price",
-    "Category",
-    "Brand",
+# Crear DataFrame
+df = pd.DataFrame(data, columns=[
+    "Nombre del Producto",
+    "Descripción",
+    "Precio (CLP)",
+    "Categoría",
+    "Marca",
     "SKU",
-    "Stock Quantity",
-    "Image URL",
-    "Tags"
+    "Stock",
+    "URL Imagen",
+    "Etiquetas"
 ])
 
-# Save to Excel
-df.to_excel("sample_products.xlsx", index=False, header=False)
+# Guardar en Excel
+df.to_excel("catalogo_productos_clp.xlsx", index=False, header=True)
 
-print("Sample Excel file 'sample_products.xlsx' created successfully!")
-print("\nFile contains the following products:")
-for i, row in enumerate(sample_data, 1):
-    print(f"{i}. {row[0]} - ${row[2]} ({row[4]})")
+print("¡Archivo Excel 'catalogo_productos_clp.xlsx' creado exitosamente!")
+print("\nEl archivo contiene los siguientes productos:")
+for i, row in enumerate(data, 1):
+    print(f"{i}. {row[0]} - ${row[2]:,} CLP ({row[4]})")

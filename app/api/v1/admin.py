@@ -6,6 +6,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, desc
 
@@ -28,6 +29,7 @@ from app.schemas.product import (
     ExcelImportResult
 )
 from app.services.excel_processor import ExcelProcessor
+from app.services.excel_exporter import ExcelExporter
 
 settings = get_settings()
 router = APIRouter()
@@ -265,32 +267,42 @@ async def upload_excel_file(
         )
 
 
-@router.get("/upload-history", response_model=UploadHistoryListResponse)
-async def get_upload_history(
-    page: int = 1,
-    size: int = 20,
+@router.get("/download-excel")
+async def download_excel_products(
+    include_inactive: bool = False,
+    category: Optional[str] = None,
+    brand: Optional[str] = None,
     db: Session = Depends(get_db),
     current_admin: Admin = Depends(get_current_active_admin)
 ):
-    """Get Excel upload history."""
+    """Download all products as Excel file."""
     
-    # Build query
-    query = db.query(UploadHistory).order_by(UploadHistory.uploaded_at.desc())
-    
-    # Get total count
-    total = query.count()
-    
-    # Apply pagination
-    offset = (page - 1) * size
-    history = query.offset(offset).limit(size).all()
-    
-    # Calculate total pages
-    pages = (total + size - 1) // size
-    
-    return UploadHistoryListResponse(
-        items=history,
-        total=total,
-        page=page,
-        size=size,
-        pages=pages
-    )
+    try:
+        # Create Excel exporter
+        exporter = ExcelExporter(db)
+        
+        # Generate Excel file content
+        excel_content = exporter.export_products_to_excel(
+            include_inactive=include_inactive,
+            category_filter=category,
+            brand_filter=brand
+        )
+        
+        # Generate filename
+        filename = exporter.generate_filename(include_inactive=include_inactive)
+        
+        # Create streaming response
+        def iterfile():
+            yield excel_content
+        
+        return StreamingResponse(
+            iterfile(),
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate Excel file: {str(e)}"
+        )
