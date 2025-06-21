@@ -1,7 +1,6 @@
 """Product API endpoints - Public access."""
 
 from typing import List, Optional
-from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
@@ -170,7 +169,7 @@ async def get_categories(db: Session = Depends(get_db)):
 
 @router.get("/{product_id}", response_model=ProductResponse)
 async def get_product(
-    product_id: UUID,
+    product_id: str,
     db: Session = Depends(get_db)
 ):
     """Get a single product by ID."""

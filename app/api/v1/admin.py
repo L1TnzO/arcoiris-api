@@ -125,7 +125,7 @@ async def get_all_products(
 
 @router.put("/products/{product_id}", response_model=ProductResponse)
 async def update_product(
-    product_id: UUID,
+    product_id: str,
     product_update: ProductUpdate,
     db: Session = Depends(get_db),
     current_admin: Admin = Depends(get_current_active_admin)
